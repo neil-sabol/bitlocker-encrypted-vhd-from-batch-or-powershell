@@ -1,5 +1,5 @@
 # bitlocker-encrypted-vhd-from-batch
-Quick and easy creation of BitLocker encrypted VHD images using a BATCH
+Quick and easy creation of BitLocker encrypted VHD images using a BATCH script.
 
 This BATCH (.bat) script helps you create an encrypted container to store sensitive information. It prompts for location, name, size, and password for the container. Scripts to mount and unmount the container are generated automatically and placed on your desktop.
 
