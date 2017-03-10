@@ -5,6 +5,7 @@ This BATCH (.bat) script helps you create an encrypted container to store sensit
 
 # Requirements
 -A version of Windows with Bitlocker support (generally 7 or higher, in Professional or higher flavor)
+
 -Administrator access on your Windows machine
 
 # Usage
