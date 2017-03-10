@@ -8,7 +8,10 @@ This BATCH (.bat) script helps you create an encrypted container to store sensit
 -Administrator access on your Windows machine
 
 # Usage
-1) Download Create-Encrypted-VHD.bat
-2) Execute the batch file (accept UAC prompts/etc.)
-3) In its simplest form, press enter 4 times, then set a password and a default encrypted VHD container will be created
-4) Alternatively, specify options for VHD filename, location (path), size, and drive letter
+1. Download Create-Encrypted-VHD.bat
+
+2. Execute the batch file (accept UAC prompts/etc.)
+
+3. In its simplest form, press enter 4 times, then set a password and a default encrypted VHD container will be created
+
+4. Alternatively, specify options for VHD filename, location (path), size, and drive letter
