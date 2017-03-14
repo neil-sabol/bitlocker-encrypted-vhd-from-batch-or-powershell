@@ -19,6 +19,8 @@ These script help you create an encrypted container on your local or network dri
 
 3. In its simplest form, press enter 4 times, then set a password and a default encrypted VHD container will be created
 
-4. Alternatively, specify options for VHD filename, location (path), size, and drive letter
+4. When prompted, set a password for the encrypted container
+
+5. Alternatively, specify options for VHD filename, location (path), size, and drive letter
 
 As noted, the BATCH file generates mount/unmount scripts on your Desktop. The PowerShell version creates a scheduled task in Windows to mount the VHD file on login (once mounted, the BitLocker password you set must be entered to unlock the container).
