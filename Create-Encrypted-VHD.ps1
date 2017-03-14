@@ -39,8 +39,8 @@ else
 Write-Host "---------------------------------------------------------------------"
 Write-Host "This script helps you create an encrypted container to store sensitive"
 Write-Host "information. You will be prompted to specify a location, name, size,"
-Write-Host "and password for the container. Scripts to mount and unmount"
-Write-Host "the container will be generated automatically and placed on your desktop."
+Write-Host "and password for the container. A Scheduled Task is created to"
+Write-Host "automatically mount your container on subsequent logins."
 Write-Host ""
 Write-Host "DO NOT CLOSE THIS WINDOW - it will close automatically when the process is"
 Write-Host "is complete."
@@ -64,6 +64,7 @@ Write-Host "*There are 1024 MB in 1 GB"
 Write-Host ""
 Write-Host ""
 
+# Capture user input regarding container creation
 $vhdName=Read-Host -Prompt "Encrypted container name? (default is $vhdNameDefault )"
 if($vhdName -eq ""){$vhdName=$vhdNameDefault}
 $vhdPath=Read-Host -Prompt "Location? (default path is C:\Users\$env:UserName\Desktop )"
@@ -73,6 +74,7 @@ if($vhdSize -eq ""){$vhdSize=$vhdSizeDefault}
 $vhdLetter=Read-Host -Prompt "Drive letter? (default is Y: )"
 if($vhdLetter -eq ""){$vhdLetter=$vhdLetterDefault}
 
+# Create diskpart script and execute diskpart
 Write-Host ""
 Write-Host ""
 "CREATE VDISK FILE=`"$vhdPath\$vhdName.vhd`"  MAXIMUM=$vhdSize TYPE=expandable" | Out-File -filepath diskpart.txt
@@ -96,6 +98,8 @@ Write-Host "PLEASE NOTE, IF YOU LOSE THE PASSWORD YOU SPECIFY FOR THIS CONTAINER
 Write-Host "YOUR DATA WILL BE UNRECOVERABLE."
 Write-Host "---------------------------------------------------------------------"
 Write-Host ""
+
+# Enable bitlocker and set password on the new volume
 manage-bde -on $vhdLetter -used -Password
 IF ($lastExitCode -ne 0) {
     Write-Host "Something went wrong while encrypting the VHD file - the script will now terminate."
@@ -111,6 +115,7 @@ Write-Host ""
 "type ""$env:USERPROFILE\diskpart-$vhdName.txt"" | diskpart" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1
 schtasks /create /tn "Mount$vhdName" /tr "powershell.exe -file ""$env:USERPROFILE\MOUNT-$vhdName.ps1""" /sc ONLOGON /ru SYSTEM | Out-Null
 
+# Print friendly exit message and open container in explorer
 Write-Host ""
 Write-Host "Your encrypted container was created! It will be mounted automatically"
 Write-Host "when your machine boots from now on (see Task Scheduler). This script will"
