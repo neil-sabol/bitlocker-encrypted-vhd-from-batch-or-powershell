@@ -102,7 +102,8 @@ Write-Host ""
 # Enable bitlocker and set password on the new volume
 manage-bde -on $vhdLetter -used -Password
 IF ($lastExitCode -ne 0) {
-    Write-Host "Something went wrong while encrypting the VHD file - the script will now terminate."
+    Write-Host "Something went wrong while encrypting the VHD file - the script will now terminate. You may need to open"
+    Write-Host "Disk Management and manually detach the VHD file prior to deleting it."
     pause
     exit
 }
