@@ -116,48 +116,50 @@ if($confirmscriptcreation -eq "y") {
    # Generate mount diskpart commands and scripts
    "select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpartm-$vhdName.txt
    "attach vdisk" | Out-File -filepath $env:USERPROFILE\diskpartm-$vhdName.txt -Append
+   
    # This part is NASTY - ensure the mount script can self-elevate
-   "$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1
-   "$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -"Append
-   "$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "if ($myWindowsPrincipal.IsInRole($adminRole))" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1
+   "`$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal(`$myWindowsID)" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$adminRole=`[System.Security.Principal.WindowsBuiltInRole]::Administrator" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "if (`$myWindowsPrincipal.IsInRole(`$adminRole))" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "{" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "$Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + `"(Elevated)`"" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "$Host.UI.RawUI.BackgroundColor = `"DarkBlue`"" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$Host.UI.RawUI.WindowTitle = `$myInvocation.MyCommand.Definition `+ `"`(Elevated`)`"" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$Host.UI.RawUI.BackgroundColor = `"DarkBlue`"" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "clear-host" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "}" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "else" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "{" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "$newProcess = new-object System.Diagnostics.ProcessStartInfo `"PowerShell`";" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "$newProcess.Arguments = $myInvocation.MyCommand.Definition;" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "$newProcess.Verb = `"runas`";" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "[System.Diagnostics.Process]::Start($newProcess);" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$newProcess = new-object System.Diagnostics.ProcessStartInfo `"PowerShell`";" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$newProcess.Arguments = `$myInvocation.MyCommand.Definition;" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "`$newProcess.Verb = `"runas`";" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "[System.Diagnostics.Process]::Start(`$newProcess);" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "exit" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "}" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
-   "type ""$env:USERPROFILE\diskpartm-$vhdName.txt"" | diskpart" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
+   "type `"$env:USERPROFILE\diskpartm-$vhdName.txt`" | diskpart" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    
    # Generate unmount diskpart commands and scripts
    "select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpartu-$vhdName.txt
    "detach vdisk" | Out-File -filepath $env:USERPROFILE\diskpartu-$vhdName.txt -Append
-   # This part is NASTY - ensure the mount script can self-elevate
-   "$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1
-   "$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -"Append
-   "$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "if ($myWindowsPrincipal.IsInRole($adminRole))" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   
+   # This part is NASTY - ensure the unmount script can self-elevate
+   "`$myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1
+   "`$myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal(`$myWindowsID)" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "`$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "if (`$myWindowsPrincipal.IsInRole(`$adminRole))" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "{" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "$Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + `"(Elevated)`"" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "$Host.UI.RawUI.BackgroundColor = `"DarkBlue`"" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "`$Host.UI.RawUI.WindowTitle = `$myInvocation.MyCommand.Definition + `"(Elevated)`"" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "`$Host.UI.RawUI.BackgroundColor = `"DarkBlue`"" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "clear-host" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "}" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "else" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "{" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "$newProcess = new-object System.Diagnostics.ProcessStartInfo `"PowerShell`";" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "$newProcess.Arguments = $myInvocation.MyCommand.Definition;" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "$newProcess.Verb = `"runas`";" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "[System.Diagnostics.Process]::Start($newProcess);" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "`$newProcess = new-object System.Diagnostics.ProcessStartInfo `"PowerShell`";" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "`$newProcess.Arguments = `$myInvocation.MyCommand.Definition;" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "`$newProcess.Verb = `"runas`";" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "[System.Diagnostics.Process]::Start(`$newProcess);" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "exit" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "}" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
-   "type ""$env:USERPROFILE\diskpartu-$vhdName.txt"" | diskpart" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
+   "type `"$env:USERPROFILE\diskpartu-$vhdName.txt`" | diskpart" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    
    # Create shortcuts to scripts
    $WshShell = New-Object -comObject WScript.Shell
