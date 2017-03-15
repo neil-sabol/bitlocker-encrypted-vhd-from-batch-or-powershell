@@ -35,12 +35,12 @@ else
    exit
    }
 
-# Run your code that needs to be elevated here
+# Begin the actual script (elevated)
 Write-Host "---------------------------------------------------------------------"
 Write-Host "This script helps you create an encrypted container to store sensitive"
 Write-Host "information. You will be prompted to specify a location, name, size,"
-Write-Host "and password for the container. A Scheduled Task is created to"
-Write-Host "automatically mount your container on subsequent logins."
+Write-Host "and password for the container. If desired, scripts to mount and"
+Write-Host "unmount the container will be created and placed on your desktop."
 Write-Host ""
 Write-Host "DO NOT CLOSE THIS WINDOW - it will close automatically when the process is"
 Write-Host "is complete."
@@ -108,18 +108,38 @@ IF ($lastExitCode -ne 0) {
 }
 
 Write-Host ""
+Write-Host ""
 
-# See https://gallery.technet.microsoft.com/scriptcenter/How-to-automatically-mount-d623ce34
-"select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpart-$vhdName.txt
-"attach vdisk" | Out-File -filepath $env:USERPROFILE\diskpart-$vhdName.txt -Append
-"type ""$env:USERPROFILE\diskpart-$vhdName.txt"" | diskpart" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1
-schtasks /create /tn "Mount$vhdName" /tr "powershell.exe -file ""$env:USERPROFILE\MOUNT-$vhdName.ps1""" /sc ONLOGON /ru SYSTEM | Out-Null
+# Check if mount/unmount scripts are desired
+$confirmscriptcreation=Read-Host -Prompt "Would you like scripts to mount and unmount this container created and placed on your desktop? (y/n)"
+if($confirmscriptcreation -eq "y") {
+   # Generate mount diskpart commands and scripts
+   "select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpartm-$vhdName.txt
+   "attach vdisk" | Out-File -filepath $env:USERPROFILE\diskpartm-$vhdName.txt -Append
+   "type ""$env:USERPROFILE\diskpartm-$vhdName.txt"" | diskpart" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1
+   
+   # Generate unmount diskpart commands and scripts
+   "select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpartu-$vhdName.txt
+   "detach vdisk" | Out-File -filepath $env:USERPROFILE\diskpartu-$vhdName.txt -Append
+   "type ""$env:USERPROFILE\diskpartu-$vhdName.txt"" | diskpart" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1
+   
+   # Create shortcuts to scripts
+   $WshShell = New-Object -comObject WScript.Shell
+   $ShortcutMount = $WshShell.CreateShortcut("$env:USERPROFILE\Desktop\MOUNT-$vhdName.lnk")
+   $ShortcutMount.TargetPath = "$env:USERPROFILE\MOUNT-$vhdName.ps1"
+   $ShortcutMount.Save()
+
+   $WshShell = New-Object -comObject WScript.Shell
+   $ShortcutUnmount = $WshShell.CreateShortcut("$env:USERPROFILE\Desktop\UNMOUNT-$vhdName.lnk")
+   $ShortcutUnmount.TargetPath = "$env:USERPROFILE\UNMOUNT-$vhdName.ps1"
+   $ShortcutUnmount.Save()
+}
 
 # Print friendly exit message and open container in explorer
 Write-Host ""
-Write-Host "Your encrypted container was created! It will be mounted automatically"
-Write-Host "when your machine boots from now on (see Task Scheduler). This script will"
-Write-Host "automatically mount and open the container this time when you press a Enter."
+Write-Host "Your encrypted container was created! If you opted for scripts to mount"
+Write-Host "and unmount your container, they can be found on your desktop (MOUNT-$vhdName"
+Write-Host "and UNMOUNT-$vhdName)."
 Write-Host ""
 Write-Host ""
 pause
