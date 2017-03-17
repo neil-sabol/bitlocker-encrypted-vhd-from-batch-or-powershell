@@ -8,11 +8,11 @@ REM See http://stackoverflow.com/questions/7044985/how-can-i-auto-elevate-my-bat
 REM This escalation code is GENIUS!
 REM Thanks @Matt (http://stackoverflow.com/users/1016343/matt)
 
-:checkPrivileges 
+:checkPrivileges
 NET FILE 1>NUL 2>NUL
 if '%errorlevel%' == '0' ( goto gotPrivileges ) else ( goto getPrivileges ) 
 
-:getPrivileges 
+:getPrivileges
 if '%1'=='ELEV' (shift & goto gotPrivileges)  
 
 setlocal DisableDelayedExpansion
@@ -23,7 +23,7 @@ ECHO UAC.ShellExecute "!batchPath!", "ELEV", "", "runas", 1 >> "%temp%\OEgetPriv
 "%temp%\OEgetPrivileges.vbs" 
 exit /B 
 
-:gotPrivileges 
+:gotPrivileges
 setlocal & pushd .
 
 @ECHO ---------------------------------------------------------------------
@@ -81,7 +81,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO SetBitlockerPassword
 @ECHO diskpart /s %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat >> %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat
 @ECHO select vdisk file="%vhdPath%\%vhdName%.vhd" > %USERPROFILE%\Desktop\UMOUNT-%vhdName%.bat
 @ECHO detach vdisk >> %USERPROFILE%\Desktop\UMOUNT-%vhdName%.bat
-@ECHO diskpart /s %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat >> %USERPROFILE%\Desktop\UMOUNT-%vhdName%.bat
+@ECHO diskpart /s %USERPROFILE%\Desktop\UMOUNT-%vhdName%.bat >> %USERPROFILE%\Desktop\UMOUNT-%vhdName%.bat
 @ECHO.
 @ECHO.
 @ECHO Your encrypted container was created! You can use the "MOUNT-%vhdName%"
