@@ -25,7 +25,7 @@ These scripts help you create an encrypted container on your local or network dr
 As noted, each script generates additional mount/unmount scripts on your Desktop. Once mounted, you must enter the Bit Locker password you set to access the container.
 
 ## Notes
-The PowerShell variant places 2 .txt files and 2 .ps1 files on your Windows user (home) directory (i.e. C:\Users\<<yourname>>). Shortcuts are created on your desktop that point to the 2 .ps1 files.
+The PowerShell variant places 2 .txt files and 2 .ps1 files on your Windows user (home) directory (i.e. C:\Users\yourname). Shortcuts are created on your desktop that point to the 2 .ps1 files.
 
 The BATCH variant creates 2 .bat files directly on your desktop.
 
