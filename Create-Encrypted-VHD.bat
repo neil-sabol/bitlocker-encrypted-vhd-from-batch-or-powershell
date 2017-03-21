@@ -1,12 +1,12 @@
 @ECHO OFF
-REM ###############################
-REM Neil Sabol
-REM neil.sabol@gmail.com
-REM ###############################
+@REM ###############################
+@REM Neil Sabol
+@REM neil.sabol@gmail.com
+@REM ###############################
 
-REM See http://stackoverflow.com/questions/7044985/how-can-i-auto-elevate-my-batch-file-so-that-it-requests-from-uac-admin-rights
-REM This escalation code is GENIUS!
-REM Thanks @Matt (http://stackoverflow.com/users/1016343/matt)
+@REM See http://stackoverflow.com/questions/7044985/how-can-i-auto-elevate-my-batch-file-so-that-it-requests-from-uac-admin-rights
+@REM This escalation code is GENIUS!
+@REM Thanks @Matt (http://stackoverflow.com/users/1016343/matt)
 
 :checkPrivileges
 NET FILE 1>NUL 2>NUL
@@ -65,8 +65,11 @@ SET vhdLetter=Y:
 @ECHO FORMAT QUICK FS=NTFS LABEL="%vhdName%" >> diskpart.txt
 @ECHO ASSIGN LETTER=%vhdLetter% >> diskpart.txt
 @diskpart /s diskpart.txt > nul 2>&1
-IF %ERRORLEVEL% NEQ 0 GOTO SetVHDParameters
+@IF %ERRORLEVEL% NEQ 0 GOTO SetVHDParameters
 @del diskpart.txt
+@REM diskpart accepts just a letter, manage-bde (later) needs letter colon, i.e. Y:
+@REM Not a perfect fix, but catches most issues
+@IF NOT [%vhdLetter:~-1%]==[:] SET vhdLetter=%vhdLetter%:
 :SetBitlockerPassword
 @ECHO.
 @ECHO ---------------------------------------------------------------------
@@ -75,7 +78,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO SetVHDParameters
 @ECHO ---------------------------------------------------------------------
 @ECHO.
 @manage-bde -on %vhdLetter% -used -Password
-IF %ERRORLEVEL% NEQ 0 GOTO SetBitlockerPassword
+@IF %ERRORLEVEL% NEQ 0 GOTO SetBitlockerPassword
 @ECHO select vdisk file="%vhdPath%\%vhdName%.vhd" > %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat
 @ECHO attach vdisk >> %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat
 @ECHO diskpart /s %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat >> %USERPROFILE%\Desktop\MOUNT-%vhdName%.bat
