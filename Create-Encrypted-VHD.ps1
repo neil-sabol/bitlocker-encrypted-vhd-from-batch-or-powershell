@@ -92,6 +92,12 @@ IF ($lastExitCode -ne 0) {
 }
 del diskpart.txt
 
+# diskpart accepts a drive letter or drive letter + colon - i.e. F: - manage-bde DOES NOT and always requires a colon
+# Crude attempt to fix this - not perfect but catches the bulk of issues
+IF (! $vhdLetter.EndsWith(":") ) {
+    $vhdLetter=$vhdLetter+":"
+}
+
 Write-Host ""
 Write-Host "---------------------------------------------------------------------"
 Write-Host "PLEASE NOTE, IF YOU LOSE THE PASSWORD YOU SPECIFY FOR THIS CONTAINER,"
