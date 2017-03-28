@@ -29,7 +29,7 @@ The PowerShell variant places 2 .txt files and 2 .ps1 files on your Windows user
 
 The BATCH variant creates 2 .bat files directly on your desktop.
 
-If either version of the script aborts after you select a password (may occur if you select a password that does not meet the minimum requirements), the VHD will be left mounted. To unmount it, delete it, and try again, you must do the following:
+If either version of the script aborts after you select a password (may occur if you select a password that does not meet the minimum requirements), an unencrypted VHD will be left mounted. To unmount it, delete it, and try again, you must do the following:
 
 1. Launch Computer Management (right-click Start menu, select `Computer Management`)
 
