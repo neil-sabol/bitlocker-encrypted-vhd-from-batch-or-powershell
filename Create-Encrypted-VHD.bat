@@ -42,13 +42,13 @@ SET vhdName=%USERNAME%_private
 SET vhdPath=C:\Users\%USERNAME%\Desktop
 SET vhdSize=1024
 SET vhdLetter=Y:
-@ECHO To accept the default options, press enter 4 times, then set a password
+@ECHO To accept the default options, press enter four times and set a password
 @ECHO.
 @ECHO.
 @ECHO Helpful hints:
-@ECHO     *Paths must be fully qualified (H:, C:\Users\yourname\Desktop, etc.)
+@ECHO     *Paths must be fully qualified (i.e. H:, C:\Users\yourname\Desktop, etc.)
 @ECHO     *You can copy/paste paths from Explorer
-@ECHO     *Size must be a number, entered in MB (500, 1024, etc.)
+@ECHO     *Size must be a number in MB (500, 1024, etc.)
 @ECHO     *There are 1024 MB in 1 GB
 @ECHO.
 @ECHO.
@@ -68,7 +68,7 @@ SET vhdLetter=Y:
 @IF %ERRORLEVEL% NEQ 0 GOTO SetVHDParameters
 @del diskpart.txt
 @REM diskpart accepts just a letter, manage-bde (later) needs letter colon, i.e. Y:
-@REM Not a perfect fix, but catches most issues
+@REM This is not a perfect fix, but appending a colon if one is missing catches some issues.
 @IF NOT [%vhdLetter:~-1%]==[:] SET vhdLetter=%vhdLetter%:
 :SetBitlockerPassword
 @ECHO.
@@ -89,8 +89,8 @@ SET vhdLetter=Y:
 @ECHO.
 @ECHO Your encrypted container was created! You can use the "MOUNT-%vhdName%"
 @ECHO and "UMOUNT-%vhdName%" scripts on your desktop to mount and unmount the
-@ECHO container in the future. This script will automatically mount and open
-@ECHO the container this time when you press a key.
+@ECHO container going forward. This script already mounted the container and will
+@ECHO open it when you press a key.
 @ECHO.
 @ECHO.
 pause
