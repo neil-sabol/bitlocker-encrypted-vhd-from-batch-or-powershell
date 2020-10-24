@@ -53,7 +53,7 @@ If the Power Shell version does not execute on your computer, you may need to re
 Set-Executionpolicy -Scope CurrentUser -ExecutionPolicy UnRestricted
 ```
 
-Alternatively, you can run `Create-Encrypted-VHD.ps1` as follows:
+Alternatively, you can run `Create-Encrypted-VHD.ps1` as follows (but note, if you do not adjust the execution policy, the mount/unmount shortcuts may not work as intended):
 
 ```
 powershell.exe -executionpolicy bypass -file Create-Encrypted-VHD.ps1
