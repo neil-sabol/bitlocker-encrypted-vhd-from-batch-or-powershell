@@ -17,7 +17,7 @@ The BAT method is a little dated (oldie but goodie maybe?). Feel free to fork/im
 ## Usage
 1. Download [Create-Encrypted-VHD.bat](https://raw.githubusercontent.com/neil-sabol/bitlocker-encrypted-vhd-from-batch-or-powershell/master/Create-Encrypted-VHD.bat) or [Create-Encrypted-VHD.ps1](https://raw.githubusercontent.com/neil-sabol/bitlocker-encrypted-vhd-from-batch-or-powershell/master/Create-Encrypted-VHD.ps1)
 
-2. Execute the respective file (accept UAC prompts/etc.)
+2. Execute the respective file (bypass SmartScreen filter, accept UAC prompts, etc.)
 
 3. In the simplest form, press *Enter* four times, then set a password - a default encrypted VHD container will be created as follows:
 
