@@ -53,18 +53,18 @@ $vhdPathDefault="C:\Users\$env:UserName\Desktop"
 $vhdSizeDefault=1024
 $vhdLetterDefault="Y:"
 
-Write-Host "To accept the default options, press enter 4 times, then set a password"
+Write-Host "To accept the default options, press enter four times and set a password"
 Write-Host ""
 Write-Host ""
 Write-Host "Helpful hints:"
-Write-Host "*Paths must be fully qualified (H:, C:\Users\yourname\Desktop, etc.)"
+Write-Host "*Paths must be fully qualified (i.e. H:, C:\Users\yourname\Desktop, etc.)"
 Write-Host "*You can copy/paste paths from Explorer"
-Write-Host "*Size must be a number, entered in MB (500, 1024, etc.)"
+Write-Host "*Size must be a number in MB (500, 1024, etc.)"
 Write-Host "*There are 1024 MB in 1 GB"
 Write-Host ""
 Write-Host ""
 
-# Capture user input regarding container creation
+# Capture user preferences regarding container creation
 $vhdName=Read-Host -Prompt "Encrypted container name? (default is $vhdNameDefault )"
 if($vhdName -eq ""){$vhdName=$vhdNameDefault}
 $vhdPath=Read-Host -Prompt "Location? (default path is C:\Users\$env:UserName\Desktop )"
@@ -74,7 +74,7 @@ if($vhdSize -eq ""){$vhdSize=$vhdSizeDefault}
 $vhdLetter=Read-Host -Prompt "Drive letter? (default is Y: )"
 if($vhdLetter -eq ""){$vhdLetter=$vhdLetterDefault}
 
-# Create diskpart script and execute diskpart
+# Create a diskpart script and execute diskpart
 Write-Host ""
 Write-Host ""
 "CREATE VDISK FILE=`"$vhdPath\$vhdName.vhd`"  MAXIMUM=$vhdSize TYPE=expandable" | Out-File -filepath diskpart.txt
@@ -92,8 +92,8 @@ IF ($lastExitCode -ne 0) {
 }
 del diskpart.txt
 
-# diskpart accepts a drive letter or drive letter + colon - i.e. F: - manage-bde DOES NOT and always requires a colon
-# Crude attempt to fix this - not perfect but catches the bulk of issues
+# diskpart accepts a drive letter or drive letter with a colon (i.e. F -or- F:) - manage-bde DOES NOT and always requires a colon (i.e F:)
+# This is not a perfect fix, but appending a colon if one is missing catches some issues.
 IF (! $vhdLetter.EndsWith(":") ) {
     $vhdLetter=$vhdLetter+":"
 }
@@ -105,7 +105,7 @@ Write-Host "YOUR DATA WILL BE UNRECOVERABLE."
 Write-Host "---------------------------------------------------------------------"
 Write-Host ""
 
-# Enable bitlocker and set password on the new volume
+# Enable bitlocker and prompt for a password on the new volume
 manage-bde -on $vhdLetter -used -Password
 IF ($lastExitCode -ne 0) {
     Write-Host "Something went wrong while encrypting the VHD file - the script will now terminate. You may need to open"
@@ -117,10 +117,10 @@ IF ($lastExitCode -ne 0) {
 Write-Host ""
 Write-Host ""
 
-# Check if mount/unmount scripts are desired
+# Ask the user if mount/unmount scripts are desired
 $confirmscriptcreation=Read-Host -Prompt "Would you like scripts to mount and unmount this container created and placed on your desktop? (y/n)"
 if($confirmscriptcreation -eq "y") {
-   # Generate mount diskpart commands and scripts
+   # Generate the mount diskpart commands and scripts
    "select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpartm-$vhdName.txt
    "attach vdisk" | Out-File -filepath $env:USERPROFILE\diskpartm-$vhdName.txt -Append
    
@@ -144,7 +144,7 @@ if($confirmscriptcreation -eq "y") {
    "}" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    "type `"$env:USERPROFILE\diskpartm-$vhdName.txt`" | diskpart" | Out-File -filepath $env:USERPROFILE\MOUNT-$vhdName.ps1 -Append
    
-   # Generate unmount diskpart commands and scripts
+   # Generate the unmount diskpart commands and scripts
    "select vdisk file=""$vhdPath\$vhdName.vhd""" | Out-File -filepath $env:USERPROFILE\diskpartu-$vhdName.txt
    "detach vdisk" | Out-File -filepath $env:USERPROFILE\diskpartu-$vhdName.txt -Append
    
@@ -168,7 +168,7 @@ if($confirmscriptcreation -eq "y") {
    "}" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    "type `"$env:USERPROFILE\diskpartu-$vhdName.txt`" | diskpart" | Out-File -filepath $env:USERPROFILE\UNMOUNT-$vhdName.ps1 -Append
    
-   # Create shortcuts to scripts
+   # Create shortcuts to the mount and unmount scripts
    $WshShell = New-Object -comObject WScript.Shell
    $ShortcutMount = $WshShell.CreateShortcut("$env:USERPROFILE\Desktop\MOUNT-$vhdName.lnk")
    $ShortcutMount.TargetPath = "$env:USERPROFILE\MOUNT-$vhdName.ps1"
@@ -180,11 +180,13 @@ if($confirmscriptcreation -eq "y") {
    $ShortcutUnmount.Save()
 }
 
-# Print friendly exit message and open container in explorer
+# Print a friendly exit message and open the container in explorer
 Write-Host ""
 Write-Host "Your encrypted container was created! If you opted for scripts to mount"
 Write-Host "and unmount your container, they can be found on your desktop (MOUNT-$vhdName"
-Write-Host "and UNMOUNT-$vhdName)."
+Write-Host "and UNMOUNT-$vhdName). You can use them to mount and unmount the container"
+Write-Host "going forward. This script already mounted the container and will open"
+Write-Host "it when you press a key."
 Write-Host ""
 Write-Host ""
 pause
