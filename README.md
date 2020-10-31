@@ -1,7 +1,9 @@
 # BitLocker encrypted vhd from batch or PowerShell
-These scripts provide a quick and easy way to create Bit Locker encrypted VHD (virtual hard disk) images using Batch or Power Shell. The scripts (mostly) automate creating an encrypted "container" on a local or network drive to store sensitive information. They prompt for location, name, size, and password for the container (vhd file). "Shortcut" scripts to mount and unmount the container are generated automatically and placed on the user's desktop. These are geared toward end user workstation usage. The idea is very similar to the functionality previously provided by [TrueCrypt](https://en.wikipedia.org/wiki/TrueCrypt).
+These scripts provide a quick and easy way to create Bit Locker encrypted VHD (virtual hard disk) images using Batch or Power Shell. They (mostly) automate creating an encrypted "container" on a local or network drive to store sensitive information. The scripts prompt for the location, name, size, and password for the container (vhd file). "Shortcut" scripts to mount and unmount the container are generated automatically and placed on the user's desktop. These are geared toward end user workstation usage. The idea is very similar to the functionality previously provided by [TrueCrypt](https://en.wikipedia.org/wiki/TrueCrypt).
 
-The BAT method is a little dated (oldie but goodie maybe?). Feel free to fork/improve - collaboration encouraged. If you encounter a problem, please file an [issue](https://github.com/neil-sabol/bitlocker-encrypted-vhd-from-batch-or-powershell/issues/new/choose) and include your Windows version and the specific error or behavior.
+The BAT method is a little dated and no longer actively maintained.
+
+Feel free to fork/improve - collaboration encouraged. If you encounter a problem, please file an [issue](https://github.com/neil-sabol/bitlocker-encrypted-vhd-from-batch-or-powershell/issues/new/choose) and include your Windows version and the specific error or behavior.
 
 
 ## Requirements
