@@ -31,17 +31,14 @@ Feel free to fork/improve - collaboration encouraged. If you encounter a problem
     * **Drive letter:** Y:
 
 4. Alternatively:
+    * Specify options interactively for VHD filename, location (path), size, and drive letter - when prompted, set a password for the encrypted container
 
-      * Specify options interactively for VHD filename, location (path), size, and drive letter - when prompted, set a password for the encrypted container
+    ![Screenshot of Create-Encrypted-VHD.ps1 with manually specifie options](https://blog.neilsabol.site/images/create-encrypted-VHD-screenshot-with-options.png)
 
-      ![Screenshot of Create-Encrypted-VHD.ps1 with manually specifie options](https://blog.neilsabol.site/images/create-encrypted-VHD-screenshot-with-options.png)
+    * Run the script non-interactively using the supported parameters (vhdName, vhdPath, vhdSize, vhdLetter, vhdCredential, confirmscriptcreation)
 
-      * Run the script non-interactively using the supported parameters (vhdName, vhdPath, vhdSize, vhdLetter, vhdCredential, confirmscriptcreation)
-            
-            ```
-            $cred = ("Abcd-1234" | ConvertTo-SecureString -AsPlainText -Force)
-            .\Create-Encrypted-VHD.ps1 -vhdName "MySecureContainer" -vhdPath C:\Users\Baymax" -vhdSize "256" -vhdLetter "X:" -vhdCredential $cred -confirmscriptcreation "y"
-            ```
+            $myPassword = ("Abcd-1234" | ConvertTo-SecureString -AsPlainText -Force)
+            .\Create-Encrypted-VHD.ps1 -vhdName "MySecureContainer" -vhdPath C:\Users\Baymax" -vhdSize "256" -vhdLetter "X:" -vhdCredential $myPassword -confirmscriptcreation "y"
 
 If the *script creation* option is "y", Create-Encrypted-VHD.ps1 generates mount/unmount "shortcut" scripts on the user's Desktop. Once mounted, the user must enter the Bit Locker password to access the container.
 
