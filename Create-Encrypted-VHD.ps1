@@ -13,7 +13,7 @@ param ($vhdName, $vhdPath, $vhdSize, $vhdLetter, $vhdCredential, $confirmscriptc
 # https://docs.microsoft.com/en-us/powershell/module/bitlocker/?view=win10-ps
 # https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/manage-bde
 # One of these is required to programmatically encrypt the VHD container
-if((Get-Module -ListAvailable -Name "BitLocker1")) {
+if((Get-Module -ListAvailable -Name "BitLocker")) {
     $encryptMethod = "powershell"
 } elseif((Test-Path "C:\Windows\System32\manage-bde.exe")) {
     $encryptMethod = "manage-bde"
