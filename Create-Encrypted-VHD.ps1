@@ -59,35 +59,40 @@ if ($myWindowsPrincipal.IsInRole($adminRole)) {
 }
 
 # Begin the actual script (elevated)
-# Print friendly introduction
-Write-Host ""
-Write-Host "---------------------------------------------------------------------"
-Write-Host "This script helps you create an encrypted container to store sensitive"
-Write-Host "information. You will be prompted to specify a location, name, size,"
-Write-Host "and password for the container. If desired, scripts to mount and"
-Write-Host "unmount the container will be created and placed on your desktop."
-Write-Host ""
-Write-Host "DO NOT CLOSE THIS WINDOW - it will close automatically when the process is"
-Write-Host "is complete."
-Write-Host "---------------------------------------------------------------------"
-Write-Host ""
+# Print friendly introduction unless running non-interactively
+if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) {
+    Write-Host ""
+    Write-Host "---------------------------------------------------------------------"
+    Write-Host "This script helps you create an encrypted container to store sensitive"
+    Write-Host "information. You will be prompted to specify a location, name, size,"
+    Write-Host "and password for the container. If desired, scripts to mount and"
+    Write-Host "unmount the container will be created and placed on your desktop."
+    Write-Host ""
+    Write-Host "DO NOT CLOSE THIS WINDOW - it will close automatically when the process is"
+    Write-Host "is complete."
+    Write-Host "---------------------------------------------------------------------"
+    Write-Host ""
+}
 
 $vhdNameDefault=$env:UserName + "_private"
 $vhdPathDefault="C:\Users\$env:UserName\Desktop"
 $vhdSizeDefault=1024
 $vhdLetterDefault="Y:"
 
-Write-Host "To accept the default options, press enter four times and set a password"
-Write-Host ""
-Write-Host ""
-Write-Host "Helpful hints:"
-Write-Host "--------------"
-Write-Host "*Paths must be fully qualified (i.e. H:, C:\Users\yourname\Desktop, etc.)"
-Write-Host "*You can copy/paste paths from Explorer"
-Write-Host "*Size must be a number in MB (500, 1024, etc.)"
-Write-Host "*There are 1024 MB in 1 GB"
-Write-Host ""
-Write-Host ""
+# Print hints unless running non-interactively
+if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) {
+    Write-Host "To accept the default options, press enter four times and set a password"
+    Write-Host ""
+    Write-Host ""
+    Write-Host "Helpful hints:"
+    Write-Host "--------------"
+    Write-Host "*Paths must be fully qualified (i.e. H:, C:\Users\yourname\Desktop, etc.)"
+    Write-Host "*You can copy/paste paths from Explorer"
+    Write-Host "*Size must be a number in MB (500, 1024, etc.)"
+    Write-Host "*There are 1024 MB in 1 GB"
+    Write-Host ""
+    Write-Host ""
+}
 
 # Capture user preferences regarding container creation - skip setting supplied via parameters
 if(-not $vhdName) {
@@ -111,7 +116,7 @@ if(-not $vhdLetter) {
 }
 
 # Create a diskpart script and execute diskpart
-Write-Host ""
+if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) { Write-Host "" }
 "CREATE VDISK FILE=`"$vhdPath\$vhdName.vhd`"  MAXIMUM=$vhdSize TYPE=expandable" | Out-File -filepath diskpart.txt
 "SELECT VDISK FILE=`"$vhdPath\$vhdName.vhd`"" | Out-File -filepath diskpart.txt -Append
 "ATTACH VDISK" | Out-File -filepath diskpart.txt -Append
@@ -133,12 +138,15 @@ if(! $vhdLetter.EndsWith(":") ) {
     $vhdLetter=$vhdLetter+":"
 }
 
-Write-Host ""
-Write-Host "---------------------------------------------------------------------"
-Write-Host "PLEASE NOTE, IF YOU LOSE THE PASSWORD YOU SPECIFY FOR THIS CONTAINER,"
-Write-Host "YOUR DATA WILL BE UNRECOVERABLE."
-Write-Host "---------------------------------------------------------------------"
-Write-Host ""
+# Print password warning unless running non-interactively
+if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) {
+    Write-Host ""
+    Write-Host "---------------------------------------------------------------------"
+    Write-Host "PLEASE NOTE, IF YOU LOSE THE PASSWORD YOU SPECIFY FOR THIS CONTAINER,"
+    Write-Host "YOUR DATA WILL BE UNRECOVERABLE."
+    Write-Host "---------------------------------------------------------------------"
+    Write-Host ""
+}
 
 # Enable bitlocker using PowerShell (Enable-BitLocker) and prompt for a password on the new volume if not supplied via parameter
 if($encryptMethod -eq "powershell") {
@@ -207,8 +215,10 @@ if($encryptMethod -eq "manage-bde") {
     }
 }
 
-Write-Host ""
-Write-Host ""
+if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) {
+    Write-Host ""
+    Write-Host ""
+}
 
 # Ask the user if mount/unmount scripts are desired (unless supplied via parameter)
 if(-not $confirmscriptcreation) {
@@ -252,15 +262,18 @@ if($confirmscriptcreation -eq "y") {
    "Dismount-DiskImage -ImagePath `"$vhdPath\$vhdName.vhd`"" | Out-File -filepath $env:USERPROFILE\Desktop\UNMOUNT-$vhdName.ps1 -Append
 }
 
-# Print a friendly exit message and open the container in explorer (unless not running interactively)
-Write-Host ""
-Write-Host "Your encrypted container was created! If you opted for scripts to mount"
-Write-Host "and unmount your container, they can be found on your desktop (MOUNT-$vhdName"
-Write-Host "and UNMOUNT-$vhdName). You can use them to mount and unmount the container"
-Write-Host "going forward. This script already mounted the container and will open"
-Write-Host "it when you press a key."
-Write-Host ""
-Write-Host ""
-if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) { pause }
-if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) { explorer.exe $vhdLetter }
+# Print a friendly exit message and open the container in explorer unless running non-interactively
+if(-not ($vhdName -and $vhdPath -and $vhdSize -and $vhdLetter -and $vhdCredential -and $confirmscriptcreation)) {
+    Write-Host ""
+    Write-Host "Your encrypted container was created! If you opted for scripts to mount"
+    Write-Host "and unmount your container, they can be found on your desktop (MOUNT-$vhdName"
+    Write-Host "and UNMOUNT-$vhdName). You can use them to mount and unmount the container"
+    Write-Host "going forward. This script already mounted the container and will open"
+    Write-Host "it when you press a key."
+    Write-Host ""
+    Write-Host ""
+    pause
+    explorer.exe $vhdLetter
+}
+
 exit 0
