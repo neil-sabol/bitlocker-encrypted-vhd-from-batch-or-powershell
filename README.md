@@ -70,3 +70,20 @@ Alternatively, you can run `Create-Encrypted-VHD.ps1` as follows (but note, if y
 ```
 powershell.exe -executionpolicy bypass -file Create-Encrypted-VHD.ps1
 ```
+
+
+## Integration testing
+`Create-Encrypted-VHD.Tests.ps1` contains basic PowerShell [Pester](https://github.com/pester/Pester) tests that I use to validate the functionality of this script as changes are introduced. To run the tests, you will need Pester 5+:
+
+```
+Install-Module -Name Pester -Force -SkipPublisherCheck
+```
+
+Once installed, the Pester tests can be invoked as follows (Note: these steps must be performed in an elevated/administrator PowerShell session):
+
+```
+cd <path-to-bitlocker-encrypted-vhd-from-batch-or-powershell>
+invoke-pester -Output Detailed
+```
+
+Note, these tests are not mocked - they actually run the script to create an encrypted VHD container, perform basic operations and destroy it once done.
