@@ -7,7 +7,7 @@ This project is geared toward end-user workstation usage. The idea is very simil
 -The BAT script is dated and no longer actively maintained or supported.
 ```
 
-Feel free to fork/improve - collaboration encouraged. If you encounter a problem, please file an [issue](https://github.com/neil-sabol/bitlocker-encrypted-vhd-from-batch-or-powershell/issues/new/choose) and include your Windows version and the specific error or behavior.
+Feel free to fork/improve - collaboration encouraged. If you encounter a problem, please start a [discussion](https://github.com/neil-sabol/bitlocker-encrypted-vhd-from-batch-or-powershell/discussions/new) and include your Windows version and the specific error or behavior.
 
 
 ## Requirements
