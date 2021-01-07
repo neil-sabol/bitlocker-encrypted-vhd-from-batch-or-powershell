@@ -42,7 +42,7 @@ $script:createShortcuts = "y"
 Describe 'Create-Encrypted-VHD' {
     BeforeAll {
         # Create the test container path if it does not exist
-        New-Item -Path "$path" -ItemType "Directory"
+        If(-Not (Test-Path "$path")) { New-Item -Path "$path" -ItemType "Directory" }
         # Generate the test encrypted container using the test parameters
         . $currentPath\Create-Encrypted-VHD.ps1 -vhdNam $name -vhdPath $path -vhdSize $sizeMB -vhdLetter $driveletter -vhdCredential $cred -confirmscriptcreation $createShortcuts
         # Wait 10 seconds to ensure Bitlocker encryption completes
@@ -77,10 +77,10 @@ Describe 'Create-Encrypted-VHD' {
         It "Should allow the VHD to be Bitlocker locked" {
             { Lock-BitLocker -MountPoint "$driveletter" -ForceDismount } | Should -Not -Throw
         }
-        It "Should not allow access to the VHD contents while it is Bitlocker locked" {
+        It "Should NOT allow access to the VHD contents while it is Bitlocker locked" {
             { Get-Content -Path "$driveletter\testfile1.txt" -ErrorAction Stop } | Should -Throw
         }
-        It "Should not allow Bitlocker to unlock the VHD with an incorrect password" {
+        It "Should NOT allow Bitlocker to unlock the VHD with an incorrect password" {
             { Unlock-BitLocker -MountPoint "$driveletter" -Password $badCred -ErrorAction Stop } | Should -Throw
         }
         It "Should allow Bitlocker to unlock the VHD with the correct password" {
